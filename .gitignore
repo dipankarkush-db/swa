@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.python-version
+
+# Jupyter / notebooks
+.ipynb_checkpoints/
+
+# Databricks
+.databricks/
+.databricks-login.json
+
+# IDEs / editors
+.idea/
+.vscode/
+*.swp
+
+# Secrets / env (never commit credentials)
+.env
+*.env
+secrets.*
+*.pem
+*.key
+
+# Generated output
+*.log
+/tmp/
