@@ -14,6 +14,45 @@ Redshift, translate to UC, generate reviewable SQL, and (optionally) apply.
 
 ---
 
+## Quickstart for the SWA team
+
+**What it does:** reads GRANTs from Redshift system views → translates them to Unity Catalog
+grants (catalog / schema / table) → writes a reviewable `.sql` → optionally applies them.
+
+**Before you run (one-time):**
+1. A Lakehouse Federation **foreign catalog** for the Redshift database must exist and be
+   visible to your compute.
+2. Compute must be able to reach Redshift on **port 5439**.
+3. Create a **secret scope** with your Redshift credentials:
+   ```bash
+   databricks secrets create-scope <scope>
+   databricks secrets put-secret <scope> host
+   databricks secrets put-secret <scope> user
+   databricks secrets put-secret <scope> password
+   ```
+4. Target Databricks users/groups should already exist — grants map **by name**
+   (a Redshift group maps to a Databricks group of the same name).
+
+**Run it:**
+1. Import the notebook and attach compute.
+2. Set the widgets: `secret_scope`, `redshift_database`, `uc_foreign_catalog`. Leave
+   `apply_grants = False`.
+3. Run top to bottom. Use the **connection test** cell near the top first.
+4. Review the generated grants (STEP 5) and the exported `.sql` file.
+5. When you're happy, set `apply_grants = True` and re-run the final cell to apply.
+
+**Switches you'll likely touch** (full details below):
+- `INCLUDE_SCHEMAS` — empty = all schemas; set a Python list to scope/speed up.
+- `PRINCIPAL_OVERRIDES` — only if a Redshift name differs from the Databricks name.
+- `CAPTURE_OWNER_PRIVILEGES` / `EFFECTIVE_PRIVILEGES_MODE` — enable to also capture *implicit*
+  access (see [the three modes](#the-three-privilege-capture-modes)).
+
+**Note:** the `SVV_*` views report **only explicit grants**. If access relies on object
+ownership or group membership, use owner-capture or effective-privileges mode. Foreign
+catalogs are read-only, so only read privileges are synced.
+
+---
+
 ## Table of contents
 - [How it works](#how-it-works)
 - [Prerequisites](#prerequisites)
