@@ -29,6 +29,11 @@ secrets.*
 *.pem
 *.key
 
+# Internal working docs — never share
+CLAUDE.md
+PRD.md
+MEMORY.md
+
 # Generated output
 *.log
 /tmp/
